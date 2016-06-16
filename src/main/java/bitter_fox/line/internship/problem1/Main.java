@@ -5,26 +5,71 @@
  */
 package bitter_fox.line.internship.problem1;
 
+import bitter_fox.line.internship.base.SearchEngine;
+import com.atilika.kuromoji.ipadic.Tokenizer;
+import java.io.FileWriter;
 import java.io.IOException;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
  * @author bitter_fox
  */
 public class Main {
-    public static void main(String[] args) throws IOException {
-//        System.err.println(Arrays.toString(new SpyseeSearcher(SearchEngine.poweredByYahoo(), "吉田").newWordCandidates()));
-        JapaneseAnalyzer ja = new JapaneseAnalyzer();
-        TokenStream ts = ja.tokenStream("", "安倍晋三");
-        CharTermAttribute cta = ts.addAttribute(CharTermAttribute.class);
-        ts.reset();
-        while (ts.incrementToken()) {
-            String token = cta.toString();
-            System.out.println(token);
+    private static final int TARGET_COUNT_OF_NEW_WORDS = 100_000;
+
+    private static final String PATH_TO_PROCESSED_NAME = "processedNames.txt";
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+//        System.err.println(Arrays.toString());
+        Tokenizer tizer = new Tokenizer.Builder().build();
+
+        NewWordFilter isNewWord = new NewWordFilter();
+
+        List<String> processedNamed = Files.readAllLines(Paths.get(PATH_TO_PROCESSED_NAME));
+
+        try (NewWordRecorder nwr = new NewWordRecorder(tizer, "newWordsFromSpysee.csv");
+                PrintWriter namesWriter = new PrintWriter(new FileWriter(PATH_TO_PROCESSED_NAME, true))) {
+            Random r = new Random();
+
+            JapaneseFamilyNameProvider jfnp = JapaneseFamilyNameProvider.fromRanking();
+
+            SearchEngine se = SearchEngine.poweredByYahoo();
+
+            int currentCount = nwr.recordedCount();
+            while (currentCount < TARGET_COUNT_OF_NEW_WORDS) {
+                String firstName = jfnp.next();
+                System.out.println(firstName);
+
+                if (processedNamed.contains(firstName)) {
+                    System.out.println(firstName + " is already processed. Skipping...");
+                    continue;
+                }
+
+                if (firstName == null) break;
+
+                new SpyseeSearcher(se, firstName).newWordCandidates()
+                        .filter(isNewWord)
+//                                .peek(System.out::println)
+                        .forEach(w -> {
+                            if (!nwr.record(w)) {
+                                System.out.println(w + " is already recorded");
+                            }
+                        });
+
+                currentCount = nwr.recordedCount();
+                System.out.println(currentCount);
+
+                namesWriter.println(firstName);
+                namesWriter.flush();
+
+                Thread.sleep(10000 + r.nextInt(30000));
+            }
+            System.out.println(nwr.recordedCount() + " new words are added");
         }
-        ts.close();
     }
 }

@@ -5,10 +5,12 @@
  */
 package bitter_fox.line.internship.problem1;
 
+import java.util.stream.Stream;
+
 /**
  *
  * @author bitter_fox
  */
 public interface NewWordSearcher {
-    String[] newWordCandidates();
+    Stream<String> newWordCandidates();
 }

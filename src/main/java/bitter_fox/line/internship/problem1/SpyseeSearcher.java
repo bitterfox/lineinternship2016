@@ -30,12 +30,11 @@ public class SpyseeSearcher implements NewWordSearcher {
     }
 
     @Override
-    public String[] newWordCandidates() {
-        return engine.searchAll(key)
+    public Stream<String> newWordCandidates() {
+        return engine.searchAll("site:spysee.jp " + key)
                 .map(SearchEngine.Result::title)
                 .filter(s -> s.contains("プロフィール"))
-                .map(s -> s.split(" ")[0])
-                .peek(System.out::println)
-                .toArray(String[]::new);
+                .map(s -> s.split(" ")[0]);
+//                .peek(System.out::println);
     }
 }

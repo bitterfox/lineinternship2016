@@ -79,7 +79,7 @@ class YahooSearchEngine implements SearchEngine {
 
     private Document connect(String url) {
         while (true) {
-            int sleepMillis = 1000;
+            int sleepMillis = 2000 + r.nextInt(2000);
             try {
                 Thread.sleep(sleepMillis); // To avoid 高頻度アクセス
                 return Jsoup.connect(url)

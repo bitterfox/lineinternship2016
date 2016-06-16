@@ -31,10 +31,10 @@ public class NewWordRecorder implements AutoCloseable {
 
     public NewWordRecorder(Tokenizer tokenizer, String path) throws IOException {
         this.tokenizer = tokenizer;
-        this.set = Util.computeAndClose(Files.lines(Paths.get(path)), s -> s
-                .map(l -> l.split(",")[0])
-                .collect(Collectors.toSet()));
         this.writer = new PrintWriter(new FileWriter(path, true));
+        this.set = Util.computeAndClose(Files.lines(Paths.get(path)), s -> s
+                .map(l -> l.split("\t")[0])
+                .collect(Collectors.toSet()));
     }
 
     public boolean record(String newWord) {
@@ -47,7 +47,7 @@ public class NewWordRecorder implements AutoCloseable {
         String[] yomiganas = yomiganas(newWord);
 
         String row = Stream.concat(Stream.of(newWord), Arrays.stream(yomiganas))
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.joining("\t"));
         writer.println(row);
 
         return true;

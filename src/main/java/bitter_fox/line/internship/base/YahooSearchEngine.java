@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document;
  * @author bitter_fox
  */
 class YahooSearchEngine implements SearchEngine {
-    private Random r = new Random();
+    private JsoupConnector connector = new JsoupConnector();
 
     private class YahooResultSet implements ResultSet {
         private String keyWord;
@@ -56,7 +56,7 @@ class YahooSearchEngine implements SearchEngine {
     }
 
     private ResultSet search(String keyWord, int start) {
-        Document d = connect(url(keyWord, start));
+        Document d = connector.connect(url(keyWord, start));
         if (d.getElementById("noRes") != null) {
             return null;
         }
@@ -73,26 +73,8 @@ class YahooSearchEngine implements SearchEngine {
     }
 
     private String url(String keyWord, int start) {
-        return "http://search.yahoo.co.jp/search?p=site%3Aspysee.jp+"+
+        return "http://search.yahoo.co.jp/search?p="+
                                 keyWord+"&search.x=1&tid=top_ga1_sa&ei=UTF-8&dups=1&fr=top_ga1_sa&b="+start;
-    }
-
-    private Document connect(String url) {
-        while (true) {
-            int sleepMillis = 2000 + r.nextInt(2000);
-            try {
-                Thread.sleep(sleepMillis); // To avoid 高頻度アクセス
-                return Jsoup.connect(url)
-//                                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/" + r.nextInt() + " Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                sleepMillis += r.nextInt(3000);
-                System.out.println("Sleeping while " + sleepMillis + "[ms]");
-            }
-        }
     }
 
     @Override

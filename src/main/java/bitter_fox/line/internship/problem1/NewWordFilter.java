@@ -24,11 +24,10 @@ class NewWordFilter implements Predicate<String> {
 
     NewWordFilter() throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getClassLoader().getResource("mecab-user-dict-seed.20160613.csv").openStream()));
+                getClass().getClassLoader().getResource("neologd-words.20160613.txt").openStream()));
                 Stream<String> lines = br.lines()
                 ) {
-            dict = lines.map(l -> l.split(",")[0])
-                    .collect(Collectors.toSet());
+            dict = lines.collect(Collectors.toSet());
         }
     }
 

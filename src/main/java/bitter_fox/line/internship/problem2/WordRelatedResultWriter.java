@@ -28,7 +28,7 @@ class WordRelatedResultWriter implements AutoCloseable {
     WordRelatedResultWriter(Path outputPath) throws IOException {
         Files.createDirectories(outputPath);
         this.outputPath = outputPath;
-        this.relatedWordsWriter = new PrintWriter(Files.newBufferedWriter(outputPath.resolve("relatedWords.tsv"), StandardOpenOption.APPEND));
+        this.relatedWordsWriter = new PrintWriter(Files.newBufferedWriter(outputPath.resolve("relatedWords.tsv"), StandardOpenOption.APPEND, StandardOpenOption.CREATE));
     }
 
     void writeResult(WordRelatedDocuments wrd, LDA learnedLda) throws IOException {
@@ -39,8 +39,7 @@ class WordRelatedResultWriter implements AutoCloseable {
         double theta[][] = learnedLda.getTheta();
 
         try (PrintWriter pwWordTopic = new PrintWriter(Files.newBufferedWriter(path.resolve("wordTopic.txt")));
-                PrintWriter pwDocTopic = new PrintWriter(Files.newBufferedWriter(path.resolve("docTopic.txt")))
-                ) {
+                PrintWriter pwDocTopic = new PrintWriter(Files.newBufferedWriter(path.resolve("docTopic.txt")))) {
             outputWordTopicProb(phi, wrd, pwWordTopic);
             outputDocTopicProb(theta, wrd, pwDocTopic);
         }

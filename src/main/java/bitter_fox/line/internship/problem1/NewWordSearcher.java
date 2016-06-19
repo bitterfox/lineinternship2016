@@ -11,6 +11,6 @@ import java.util.stream.Stream;
  *
  * @author bitter_fox
  */
-public interface NewWordSearcher {
+interface NewWordSearcher {
     Stream<String> newWordCandidates();
 }

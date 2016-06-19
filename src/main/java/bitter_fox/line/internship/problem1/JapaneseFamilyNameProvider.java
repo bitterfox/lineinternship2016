@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
  *
  * @author bitter_fox
  */
-public interface JapaneseFamilyNameProvider {
+interface JapaneseFamilyNameProvider {
     String next();
 
     static JapaneseFamilyNameProvider fromRanking() throws IOException { // ThreadSafeに！

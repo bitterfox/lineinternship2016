@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  *
  * @author bitter_fox
  */
-public class NewWordRecorder implements AutoCloseable {
+class NewWordRecorder implements AutoCloseable {
     private Tokenizer tokenizer;
     private PrintWriter writer;
     private Set<String> set = new HashSet<>();

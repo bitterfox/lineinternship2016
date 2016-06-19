@@ -20,7 +20,7 @@ import org.jsoup.nodes.Document;
  *
  * @author bitter_fox
  */
-public class SpyseeSearcher implements NewWordSearcher {
+class SpyseeSearcher implements NewWordSearcher {
     private SearchEngine engine;
     private String key;
 

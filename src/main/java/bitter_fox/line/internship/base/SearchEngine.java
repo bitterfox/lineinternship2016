@@ -37,6 +37,11 @@ public interface SearchEngine {
         public String description() {
             return description;
         }
+
+        @Override
+        public String toString() {
+            return "Result{" + "href=" + href + ", title=" + title + ", description=" + description + '}';
+        }
     }
 
     public interface ResultSet {

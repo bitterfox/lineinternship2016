@@ -97,7 +97,7 @@ class WazaSearcher implements NewWordSearcher {
         }
     }
 
-    Stream<String> loadPage(String url) {
+    private Stream<String> loadPage(String url) {
         Element gameTable = connector.connect(url).getElementsByTag("table").get(1);
         List<Element> gameRecords = gameTable.getElementsByTag("tr");
 
